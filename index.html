@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte Diário — Eleição Geral 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red:        #EA1D2C;
+    --red-dark:   #C4161C;
+    --red-light:  #FFECEE;
+    --red-mid:    #FF4D5A;
+    --charcoal:   #1A1A1A;
+    --gray-900:   #2C2C2C;
+    --gray-600:   #6B6B6B;
+    --gray-300:   #D9D9D9;
+    --gray-100:   #F5F5F5;
+    --white:      #FFFFFF;
+    --success:    #27AE60;
+    --warning:    #F39C12;
+    --danger:     #EA1D2C;
+    --info:       #3498DB;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--gray-100);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--red);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(234,29,44,.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 32px; height: 32px; background: var(--white); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark span { font-size: 16px; font-weight: 800; color: var(--red); line-height: 1; letter-spacing: -0.5px; }
+  .logo-text { font-size: 15px; font-weight: 700; color: var(--white); letter-spacing: -.2px; }
+  .logo-sub { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.75); letter-spacing: .4px; text-transform: uppercase; }
+  .header-badge {
+    background: rgba(255,255,255,.2); color: var(--white);
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: .3px;
+  }
+
+  .container {
+    max-width: 1060px; margin: 28px auto; padding: 0 24px;
+    display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start;
+  }
+
+  .section-label {
+    font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--gray-600); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--gray-300); }
+
+  .card { background: var(--white); border-radius: 12px; border: 1px solid var(--gray-300); overflow: hidden; }
+
+  /* KPI HERO */
+  .kpi-hero { background: var(--red); padding: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .kpi-hero-left { display: flex; flex-direction: column; gap: 4px; }
+  .kpi-hero-title { font-size: 12px; opacity: 0.85; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; color: var(--white); }
+  .kpi-hero-value { font-size: 52px; font-weight: 800; line-height: 1; color: var(--white); letter-spacing: -1.5px; display: flex; align-items: baseline; gap: 12px; }
+  .kpi-hero-today { font-size: 16px; font-weight: 600; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; letter-spacing: 0; }
+  
+  .kpi-hero-compare { text-align: right; font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.85); line-height: 1.6; }
+  .kpi-hero-compare span { font-weight: 700; color: var(--white); background: rgba(0,0,0,0.15); padding: 3px 6px; border-radius: 4px; margin-left: 6px; display: inline-block; }
+  .kpi-hero-compare > div { margin-bottom: 4px; }
+
+  /* PANELS */
+  .panel-header { background: var(--charcoal); padding: 16px 20px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .panel-header h2 { font-size: 14px; font-weight: 700; color: var(--white); letter-spacing: -.1px; }
+  .panel-header span { font-size: 11px; color: rgba(255,255,255,.5); font-weight: 400; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 4px; }
+
+  .tool-block { border-bottom: 1px solid var(--gray-100); }
+  .tool-block:last-child { border-bottom: none; }
+  .tool-header { padding: 18px 20px 10px; display: flex; align-items: center; gap: 10px; }
+  .tool-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+  .tool-name { font-size: 14px; font-weight: 700; color: var(--charcoal); flex: 1; }
+
+  /* METRICS GRID */
+  .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px 20px; }
+  .metric-card { background: var(--gray-100); border: 1px solid var(--gray-300); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .metric-card.highlight { background: var(--red-light); border-color: rgba(234,29,44,.2); }
+  .metric-title { font-size: 10px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: .5px; }
+  .metric-value { font-size: 24px; font-weight: 800; color: var(--charcoal); line-height: 1; display: flex; align-items: center; gap: 8px; }
+  .metric-today { font-size: 12px; font-weight: 600; color: var(--success); background: #E8F5E9; padding: 2px 6px; border-radius: 4px; }
+  .metric-subtitle { font-size: 11px; color: var(--gray-600); font-weight: 500; margin-top: 4px; }
+
+  .feira-section { padding: 20px; }
+  .feira-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; }
+  .feira-title { font-size: 16px; font-weight: 800; color: var(--charcoal); display: flex; align-items: center; gap: 8px; }
+  .feira-metric { background: var(--gray-900); color: var(--white); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  
+  .stand-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .stand-pill { background: var(--white); border: 1px solid var(--gray-300); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--gray-900); }
+  .stand-pill.highlight { border-color: var(--red-mid); color: var(--red-dark); background: var(--red-light); }
+  .stand-pill span { background: var(--gray-100); color: var(--charcoal); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .stand-pill.highlight span { background: var(--red); color: var(--white); }
+  .stand-pill.pending { border-style: dashed; color: var(--gray-600); font-weight: 500; }
+
+  /* CAROUSEL */
+  .carousel { position: relative; width: 100%; height: 280px; border-radius: 12px; overflow: hidden; background: var(--gray-900); }
+  .carousel-inner { display: flex; height: 100%; transition: transform 0.4s ease-in-out; }
+  .carousel-item { min-width: 100%; height: 100%; }
+  .carousel-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+  
+  .carousel-control { 
+    position: absolute; top: 50%; transform: translateY(-50%); 
+    background: rgba(255,255,255,0.8); color: var(--charcoal); 
+    border: none; width: 36px; height: 36px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; z-index: 10; font-size: 18px; font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.2s;
+  }
+  .carousel-control:hover { background: var(--white); transform: translateY(-50%) scale(1.1); }
+  .carousel-control.prev { left: 16px; }
+  .carousel-control.next { right: 16px; }
+  .carousel-indicators { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+  .indicator { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.3s; }
+  .indicator.active { background: var(--white); width: 24px; border-radius: 4px; }
+
+  .alert-list { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .alert-item { padding: 14px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; gap: 12px; align-items: flex-start; line-height: 1.4; }
+  .alert-warning { background: #FFF8E6; color: #9E6500; border: 1px solid #F5C842; }
+  .alert-danger { background: var(--red-light); color: var(--red-dark); border: 1px solid rgba(234,29,44,.2); }
+  .alert-success { background: #E8F5E9; color: #1B5E20; border: 1px solid #A5D6A7; }
+  .alert-info { background: #EBF5FB; color: #21618C; border: 1px solid #AED6F1; }
+  .alert-icon { font-size: 16px; line-height: 1; margin-top: 1px; }
+
+  /* Sidebar Tools */
+  .tools-header { background: var(--red); padding: 16px 20px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .tools-header h2 { font-size: 14px; font-weight: 700; color: var(--white); }
+  .tools-header span { font-size: 11px; color: rgba(255,255,255,.6); }
+  .tool-item { padding: 16px 20px; border-bottom: 1px solid var(--gray-100); display: flex; flex-direction: column; gap: 10px; }
+  .tool-item:last-child { border-bottom: none; }
+  .tool-item-name { font-size: 13px; font-weight: 700; color: var(--charcoal); display: flex; align-items: center; gap: 6px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; border-radius: 6px; padding: 7px 12px; text-decoration: none; border: none; cursor: pointer; transition: filter .15s, transform .1s; line-height: 1; white-space: nowrap; }
+  .btn:hover { filter: brightness(.92); transform: translateY(-1px); }
+  .btn-primary { background: var(--red); color: var(--white); }
+  .btn-secondary { background: var(--gray-100); color: var(--gray-900); border: 1px solid var(--gray-300); }
+
+  .footer { text-align: center; font-size: 11px; color: var(--gray-600); padding: 8px 0 28px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark"><span>EG</span></div>
+    <div>
+      <div class="logo-text">Eleição Geral 2026</div>
+      <div class="logo-sub">Reporte Executivo — Dia 2</div>
+    </div>
+  </div>
+  <div class="header-badge">Benefícios Squad</div>
+</header>
+
+<div class="container">
+
+  <!-- ══════════════════════════════════
+       LEFT COL — DADOS PRINCIPAIS
+  ══════════════════════════════════ -->
+  <div style="display: flex; flex-direction: column; gap: 24px;">
+    
+    <div>
+      <div class="section-label">Métrica Principal de Adesão</div>
+      <div class="card kpi-hero">
+        <div class="kpi-hero-left">
+          <div class="kpi-hero-title">Eleições Encerradas</div>
+          <div class="kpi-hero-value">
+            2.334 <span class="kpi-hero-today">+595 (Dia 2)</span>
+          </div>
+        </div>
+        <div class="kpi-hero-compare">
+          <div>Dia 2 (2025) <span>884</span></div>
+          <div>Dia 1 (2025) <span>1.343</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Engajamento Digital</div>
+      <div class="card access-panel">
+        <div class="panel-header">
+          <h2>Uso das Ferramentas</h2>
+          <span>Acumulado 2 Dias</span>
+        </div>
+
+        <!-- PLAYBOOK -->
+        <div class="tool-block">
+          <div class="tool-header">
+            <div class="tool-dot"></div>
+            <div class="tool-name">📋 Playbook Eleição Geral | 2026</div>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card highlight">
+              <div class="metric-title">Acessos Acumulados</div>
+              <div class="metric-value">2.535 <span class="metric-today">+330 hoje</span></div>
+              <div class="metric-subtitle">Visualizações totais na página</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PESQUISA -->
+        <div class="tool-block">
+          <div class="tool-header">
+            <div class="tool-dot"></div>
+            <div class="tool-name">🔍 Pesquisa Eleição Geral 2026</div>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card highlight">
+              <div class="metric-title">Pesquisas Concluídas</div>
+              <div class="metric-value">1.155 <span class="metric-today">+301 hoje</span></div>
+              <div class="metric-subtitle">Foodlovers que finalizaram o fluxo</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Iniciaram o Fluxo</div>
+              <div class="metric-value" style="font-size: 20px;">1.589 <span style="font-size: 12px; color: var(--gray-600); font-weight: 500;">(Dia 1)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPARADOR DE REDE -->
+        <div class="tool-block">
+          <div class="tool-header">
+            <div class="tool-dot"></div>
+            <div class="tool-name">⚖️ Comparador de Redes de Saúde</div>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card highlight">
+              <div class="metric-title">Consultas Realizadas</div>
+              <div class="metric-value">589 <span class="metric-today">+167 hoje</span></div>
+              <div class="metric-subtitle">Buscas por cobertura de rede</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Ações Presenciais</div>
+      <div class="card">
+        <div class="panel-header" style="background: var(--red-dark);">
+          <h2>Feira de Benefícios</h2>
+          <span>Presencial (Dia 2)</span>
+        </div>
+        
+        <div class="feira-section">
+          <div class="feira-header">
+            <div class="feira-title">🎪 Engajamento nos Stands</div>
+            <div class="feira-metric"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Público Total: ~200</div>
+          </div>
+
+          <div class="stand-grid">
+            <div class="stand-pill highlight">Stay <span>177</span></div>
+            <div class="stand-pill highlight">Wellhub <span>124</span></div>
+            <div class="stand-pill highlight">Meu Pet <span>114</span></div>
+            <div class="stand-pill">Bradesco <span>70</span></div>
+            <div class="stand-pill">Drogasil <span>60</span></div>
+            <div class="stand-pill">New Value <span>50</span></div>
+            <div class="stand-pill">Unimed <span>38</span></div>
+            <div class="stand-pill">Lockton <span>10</span></div>
+            <div class="stand-pill">Zurich <span>10</span></div>
+            
+            <div class="stand-pill pending">Legall (em apuração)</div>
+            <div class="stand-pill pending">Benefício Visão (em apuração)</div>
+            <div class="stand-pill pending">iFood Benefícios (em apuração)</div>
+            <div class="stand-pill pending">Dental (em apuração)</div>
+          </div>
+
+          <!-- Carrossel -->
+          <div class="carousel" id="feiraCarousel">
+            <div class="carousel-inner" id="carouselInner">
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.04.jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.03 (2).jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.03 (1).jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.03.jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.02 (3).jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.02 (2).jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.02 (1).jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.02.jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.01.jpeg" alt="Foto da Feira"></div>
+              <div class="carousel-item"><img src="WhatsApp Image 2026-06-16 at 16.16.00.jpeg" alt="Foto da Feira"></div>
+            </div>
+            <button class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="carousel-control next" onclick="moveSlide(1)">&#10095;</button>
+            <div class="carousel-indicators" id="carouselIndicators"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Operação & Estabilidade</div>
+      <div class="card">
+        <div class="panel-header" style="margin-bottom: 12px; background: var(--gray-900);">
+          <h2>Pontos de Atenção & Ajustes</h2>
+          <span>Status Atual</span>
+        </div>
+        
+        <div class="alert-list">
+          <div class="alert-item alert-info" style="display: block;">
+            <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;">
+              <div class="alert-icon">📞</div>
+              <div><strong>Suporte & Atendimento (Dia 1 - 15/06)</strong><br>Desempenho de chamados apresenta alta redução frente ao total de 2025.</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-left: 28px;">
+              <div style="background: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 6px;">
+                <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #21618C; margin-bottom: 4px;">Retenção Alli</div>
+                <div style="font-size: 18px; font-weight: 800; color: #154360; line-height: 1; display: flex; align-items: center; gap: 6px;">
+                  581 
+                  <span style="font-size: 10px; font-weight: 700; background: #D5F5E3; color: #145A32; padding: 2px 6px; border-radius: 4px; border: 1px solid #A9DFBF;">🎯 99% assertividade</span>
+                </div>
+              </div>
+              <div style="background: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 6px;">
+                <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #21618C; margin-bottom: 4px;">Tickets (Vs. 2025 Total)</div>
+                <div style="font-size: 12px; font-weight: 700; color: #154360; line-height: 1.4;">
+                  N1: 42 <span style="font-weight: 500; color: rgba(21, 67, 96, 0.7); font-size: 10px;">(Em 2025: 482)</span><br>
+                  N2: 23 <span style="font-weight: 500; color: rgba(21, 67, 96, 0.7); font-size: 10px;">(Em 2025: 287)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert-item alert-danger">
+            <div class="alert-icon">⚠️</div>
+            <div><strong>Erro sistêmico: Cards Downgrades</strong><br>Em processo de ajuste e avaliação de impacto (desde o Dia 1).</div>
+          </div>
+          <div class="alert-item alert-success">
+            <div class="alert-icon">✅</div>
+            <div><strong>Histórico Resolvido (Dia 1)</strong><br>Erro Card Seguro de Vida (36) e Comunicação VR/VA (R$ 810) corrigidos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════
+       RIGHT COL — FERRAMENTAS & LINKS
+  ══════════════════════════════════ -->
+  <div>
+    <div class="section-label">Atalhos</div>
+    <div class="card">
+      <div class="tools-header">
+        <h2>Acesso Rápido</h2>
+        <span>Ferramentas da Equipe</span>
+      </div>
+
+      <div class="tool-item">
+        <div class="tool-item-name"><span class="icon">📋</span> Playbook</div>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="#" target="_blank">Acessar</a>
+          <a class="btn btn-secondary" href="#" target="_blank">Código</a>
+        </div>
+      </div>
+
+      <div class="tool-item">
+        <div class="tool-item-name"><span class="icon">🔍</span> Pesquisa</div>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="#" target="_blank">Acessar</a>
+          <a class="btn btn-secondary" href="#" target="_blank">Código</a>
+        </div>
+      </div>
+
+      <div class="tool-item">
+        <div class="tool-item-name"><span class="icon">⚖️</span> Comparador</div>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="#" target="_blank">Acessar</a>
+          <a class="btn btn-secondary" href="#" target="_blank">Código</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Set automatic footer date
+  document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date();
+    document.getElementById('current-date').textContent = today.toLocaleDateString('pt-BR');
+    
+    // Initialize Carousel
+    initCarousel();
+  });
+
+  // Carousel Logic
+  let currentSlide = 0;
+  let slideInterval;
+
+  function initCarousel() {
+    const track = document.getElementById('carouselInner');
+    const items = track.querySelectorAll('.carousel-item');
+    const indicatorsContainer = document.getElementById('carouselIndicators');
+    
+    // Create indicators
+    items.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.classList.add('indicator');
+      if (index === 0) dot.classList.add('active');
+      dot.onclick = () => goToSlide(index);
+      indicatorsContainer.appendChild(dot);
+    });
+
+    // Auto-advance
+    startCarouselInterval();
+  }
+
+  function updateCarousel() {
+    const track = document.getElementById('carouselInner');
+    const items = track.querySelectorAll('.carousel-item');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    indicators.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentSlide);
+    });
+  }
+
+  function moveSlide(direction) {
+    const itemsCount = document.querySelectorAll('.carousel-item').length;
+    currentSlide = (currentSlide + direction + itemsCount) % itemsCount;
+    updateCarousel();
+    resetCarouselInterval();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+    resetCarouselInterval();
+  }
+
+  function startCarouselInterval() {
+    slideInterval = setInterval(() => moveSlide(1), 3500);
+  }
+
+  function resetCarouselInterval() {
+    clearInterval(slideInterval);
+    startCarouselInterval();
+  }
+</script>
+
+<div class="footer">Atualizado em <span id="current-date"></span> · Operação Eleições 2026 · Benefícios</div>
+
+</body>
+</html>
